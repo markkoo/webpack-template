@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    
+    <% for (var chunk in htmlWebpackPlugin.files.chunks) { if(chunk.split('~').indexOf(htmlWebpackPlugin.options.sName) !== -1) {htmlWebpackPlugin.files.chunks[chunk].css.forEach(function(css){ %><link href="<%= css %>" rel="stylesheet"><%})}} %>
+</head>
+<body>
+    <h1>hello</h1>
+    
+    <% for (var chunk in htmlWebpackPlugin.files.chunks) { if(chunk.split('~').indexOf(htmlWebpackPlugin.options.sName) !== -1) { if(htmlWebpackPlugin.files.chunks[chunk].entry.indexOf('runtime~') !== -1) {         %><script><%= compilation.assets[htmlWebpackPlugin.files.chunks[chunk].entry.split('/').pop()].source() %></script><% } else {%><script src="<%= htmlWebpackPlugin.files.chunks[chunk].entry %>"></script><% }}} %>
+</body>
+</html>
