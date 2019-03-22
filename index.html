@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Page Title</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="/assets/index.4107aa84352f71c9e99d.css" rel="stylesheet"></head>
+<body>
+     <div class="crop">
+        <div id="parent" sZoom sCropZoom [sZoomCanPanFn]="canPanFn" [sZoomSetFrameDimensionFn]="setFrameDimensionFn"
+            [sZoomFirstLoadToCenterFn]="firstLoadToCenterFn" [sZoomMinScaleFn]="minScaleFn" [sZoomMaxScaleFn]="maxScaleFn"
+            class="zoom">
+            <img sZoomImage draggable="false" src="/images/1.jpg" [sZoomImageWidth]="imageWidth"
+                [sZoomImageHeight]="imageHeight" class="image">
+            <div sZoomFrame [class.cursor]="showFrameAroundCursor" class="frame cursor">
+                <span #frameAroundTop data-frame-around class="line topLine"></span>
+                <span #frameAroundRight data-frame-around class="line rightLine"></span>
+                <span #frameAroundBottom data-frame-around class="line bottomLine"></span>
+                <span #frameAroundLeft data-frame-around class="line leftLine"></span>
+                <span #frameAroundTopLeft data-frame-around class="angle topLeftAngle"></span>
+                <span #frameAroundTopRight data-frame-around class="angle topRightAngle"></span>
+                <span #frameAroundBottomLeft data-frame-around class="angle bottomLeftAngle"></span>
+                <span #frameAroundBottomRight data-frame-around class="angle bottomRightAngle"></span>
+            </div>
+        </div>
+    </div>
+<script type="text/javascript" src="/assets/runtime~index.1c54f66e028eec2bf1cf.bundle.js"></script><script type="text/javascript" src="/assets/index.9faf272779a72b3c48df.bundle.js"></script></body>
+</html>

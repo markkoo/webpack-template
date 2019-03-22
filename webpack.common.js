@@ -1,59 +1,15 @@
-const pathHelper = require('path');
+﻿const pathHelper = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin'); // create index.html
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin'); // split out css 
 const webpack = require('webpack');
-//  const InlineSourcePlugin = require('html-webpack-inline-source-plugin');
-
-const entryPaths = [
-    'Web/Home/home.ts'
-];
-
-const componentPaths = [
-];
-
-function changePathLastSegment(path, splitSymbol, to) {
-    let segments = path.split(splitSymbol);
-    segments.pop();
-    segments.push(to);
-    return segments.join(splitSymbol);
-}
-
-const entry = entryPaths.reduce((result, path, index) => {
-    result[index.toString()] = pathHelper.resolve(__dirname, path);
-    return result;
-}, {});
-
-const entryHtmlWebpacks = entryPaths.map((path, index) => {
-    
-    return new HtmlWebpackPlugin({
-        template: pathHelper.resolve(__dirname, changePathLastSegment(path, '.', 'html')),
-        inject: false,
-        filename: pathHelper.resolve(__dirname, changePathLastSegment(path, '/', 'Index.html')),
-        sName: index.toString()
-    });
-});
-
-const compoentHtmlWebpacks = componentPaths.map(path => {
-    return new HtmlWebpackPlugin({
-        template: pathHelper.resolve(__dirname, path),
-        inject: false,
-        filename: pathHelper.resolve(__dirname, changePathLastSegment(path, '/', 'Default.cshtml'))
-    });
-});
-
-const allHtmlWebpacks = entryHtmlWebpacks.concat(compoentHtmlWebpacks);
-// allHtmlWebpacks.push(new HtmlWebpackPlugin({
-//     template: pathHelper.resolve(__dirname, 'Web/Shared/layout.cshtml'),
-//     inject: false,
-//     filename: pathHelper.resolve(__dirname, 'Web/Shared/Index.cshtml')
-// }));
-
 
 module.exports = {
-    entry: entry,
-    plugins: allHtmlWebpacks.concat([
-        new CleanWebpackPlugin(['assets']),
+    entry: {
+        'index': pathHelper.resolve(__dirname, 'index.ts')
+    },
+    plugins: [
+        new CleanWebpackPlugin(['wwwroot/assets']),
         new MiniCssExtractPlugin({
             filename: '[name].[contenthash].css',
             chunkFilename: '[name].[contenthash].css'
@@ -61,8 +17,13 @@ module.exports = {
         new webpack.ProvidePlugin({
             jQuery: 'jquery',
             'window.jQuery': 'jquery'
+        }),
+        new HtmlWebpackPlugin({
+            template: pathHelper.resolve(__dirname, 'index-template.html'),
+            inject: true,
+            filename: pathHelper.resolve(__dirname, 'index.html'),
         })
-    ]),
+    ],
     output: {
         publicPath: '/assets',
         // publicPath: '/',
@@ -76,7 +37,7 @@ module.exports = {
             chunks(chunk) {
                 return chunk.name !== 'polyfills' && chunk.name !== 'landingPage';
             },
-            minSize: 1,
+            minSize: 30000,
             minChunks: 1,
             maxAsyncRequests: 5,
             maxInitialRequests: 2,
@@ -137,19 +98,31 @@ module.exports = {
                 }]
             },
             {
-                test: /\.(png|jpg|gif)$/,
-                use: [{
-                    loader: 'url-loader', // base64
+                test: /\.(gif|png|jpe?g)$/i,
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            // limit should be 8192, but 因为 ldjson 和 fb 都不可以放 base64, 但又没有方法 disable 某一些 image 不然它变 base64, 只好把全部都关掉不转 base64 了. 
+                            limit: 1, 
+                            fallback: 'file-loader',
+                            outputPath: '/',
+                            publicPath: '/assets/'
+                        }
+                    },
+                  {
+                    loader: 'image-webpack-loader',
                     options: {
-                        limit: 8192,
-                        fallback: 'file-loader',
-                        outputPath: '/',
-                        publicPath: '/assets/'
-                    }
-                }]
+                        mozjpeg: {
+                          progressive: true,
+                          quality: 65
+                        }
+                      }
+                  },
+                ],
             },
             {
-                test: /\.(woff|woff2|eot|ttf|otf|svg|webmanifest)$/,
+                test: /\.(woff|woff2|eot|ttf|otf|svg)$/,
                 use: [{
                     loader: 'file-loader',
                     options: {
@@ -157,7 +130,18 @@ module.exports = {
                         publicPath: '/assets/'
                     }
                 }]
-            }
+            },
+            {
+                test: /\.webmanifest$/,
+                use: [
+                  {
+                    loader: 'file-loader',
+                    options: {
+                        publicPath: '/assets/'
+                    }
+                  }
+                ]
+              }
         ]
     }
 };
