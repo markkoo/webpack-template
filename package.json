@@ -51,6 +51,7 @@
   "dependencies": {
     "@fancyapps/fancybox": "^3.5.2",
     "core-js": "^2.5.7",
+    "countup.js": "^2.0.4",
     "datatables.net-dt": "^1.10.19",
     "datatables.net-responsive-dt": "^2.2.3",
     "datatables.net-scroller": "^1.5.1",
